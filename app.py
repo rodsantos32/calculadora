@@ -57,6 +57,69 @@ def _find_nfe_root(root):
 
     return None
 
+def _find_text_anywhere(element, local_name):
+    """Busca texto de uma tag ignorando namespaces."""
+    if element is None:
+        return ''
+    # Busca direta usando o namespace conhecido
+    found = element.find(f'nfe:{local_name}', NS)
+    if found is not None and found.text:
+        return found.text
+    # Fallback: percorre todas as tags procurando pelo localName
+    for elem in element.iter():
+        if elem.tag.split('}')[-1] == local_name and elem.text:
+            return elem.text
+    return ''
+def extrair_identificadores_nfe(xml_file):
+    """Retorna (cnpj, numero_nota) extraídos do XML."""
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    nfe_root = _find_nfe_root(root)
+    if nfe_root is None:
+        raise ValueError('Arquivo XML não é uma NFe válida (NFe não encontrada)')
+    infNFe = nfe_root.find('nfe:infNFe', NS)
+    if infNFe is None:
+        raise ValueError('Estrutura XML inválida - tag infNFe não encontrada')
+    ide = infNFe.find('nfe:ide', NS)
+    emit = infNFe.find('nfe:emit', NS)
+    numero_nota = _find_text_anywhere(ide, 'nNF').strip()
+    cnpj = _find_text_anywhere(emit, 'CNPJ').strip()
+    # Normaliza removendo caracteres não numéricos
+    cnpj_digits = ''.join(ch for ch in cnpj if ch.isdigit())
+    numero_digits = ''.join(ch for ch in numero_nota if ch.isdigit()) or numero_nota
+    if not cnpj_digits or not numero_digits:
+        raise ValueError('Não foi possível identificar CNPJ ou número da nota fiscal no XML enviado.')
+    return cnpj_digits, numero_digits
+def process_xml_file(temp_path, original_filename, *, db_client=None, logger=None):
+    """Processa um XML de NF-e verificando duplicidade e retornando dados estruturados."""
+    db_client = db_client or db
+    try:
+        cnpj, numero_nota = extrair_identificadores_nfe(temp_path)
+    except ValueError as exc:
+        return 400, {'error': str(exc)}
+    doc_id = f"{cnpj}-{numero_nota}"
+    notas_collection = db_client.collection('notas_fiscais')
+    doc_ref = notas_collection.document(doc_id)
+    existing = doc_ref.get()
+    if hasattr(existing, 'exists') and existing.exists:
+        return 409, {'error': 'Nota fiscal já cadastrada para este CNPJ e número.'}
+    dados = extrair_dados_xml(temp_path)
+    if isinstance(dados, dict) and dados.get('error'):
+        return 400, dados
+    if logger is not None:
+        try:
+            logger.info('Registrando nota fiscal %s - %s', cnpj, numero_nota)
+        except Exception:
+            pass
+    doc_ref.set({
+        'cnpj': cnpj,
+        'numero_nota': numero_nota,
+        'arquivo_original': original_filename,
+        'criado_em': firestore.SERVER_TIMESTAMP
+    })
+    return 200, {'itens': dados, 'nota': {'cnpj': cnpj, 'numero': numero_nota}}
+
+
 def extrair_dados_xml(xml_file):
     try:
         tree = ET.parse(xml_file)
