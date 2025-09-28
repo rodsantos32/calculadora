@@ -1,0 +1,329 @@
+@import url("./global.css");
+
+.home-header>nav>ul>li>a {
+  color: var(--white);
+}
+
+.login-icon {
+  color: var(--white);
+}
+
+.home {
+  background-image: url("../image/bg-home.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* background-color: red; */
+}
+
+.hero-content {
+  color: var(--white);
+}
+
+.hero-content>h1 {
+  font-family: "Maven Pro", sans-serif;
+  font-weight: 600;
+  font-size: 60px;
+
+}
+
+.hero-content>p {
+  font-family: "Just", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+
+}
+
+.home-button {
+  font-family: "Just", sans-serif;
+  padding: 15px 35px;
+  background-color: var(--thunderbird);
+  border-radius: 130px;
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.home-button:hover {
+  background-color: var(--crimson);
+}
+
+.calc-content {
+  border: 2px solid var(--mercury);
+  border-radius: 50px;
+  background-color: var(--wild_sand);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25) !important;
+
+}
+
+
+
+.btn-materia-prima>p {
+  font-family: "Maven Pro", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 13px;
+  color: var(--shark);
+}
+
+.btn-materia-prima>span {
+  width: 40px;
+  height: 40px;
+  padding: 13px;
+  border-radius: 50px;
+  background-color: var(--crimson);
+
+}
+
+.modal-add-materia-prima {
+  background-color: var(--wild_sand);
+  border: 1px solid var(--mercury);
+}
+
+
+.modal-add-materia-prima>h2 {
+  font-family: "Jost", sans-serif;
+  font-weight: 700;
+  font-size: 40px;
+  color: var(--thunderbird);
+}
+
+.modal-add-materia-prima>p {
+  font-family: "Jost", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--thunder);
+}
+
+.modal-add-materia-prima-search>input {
+  background-color: transparent;
+  border: 1px solid var(--dusty_gray);
+  border-radius: 10px;
+}
+
+.modal-add-materia-prima-search>button {
+  font-family: "Maven Pro", sans-serif;
+  color: var(--shark);
+  font-weight: 500;
+}
+
+.insumo-info {
+  font-family: "Maven Pro", sans-serif;
+  color: var(--shark);
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.insumo-actions>button {
+  font-family: "Jost", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.26px;
+  color: var(--white);
+  padding: 10px 25px;
+  text-transform: uppercase;
+  background-color: var(--crimson);
+  border-radius: 130px;
+}
+
+/* Barra de rolagem do modal */
+.modal-add-materia-prima::-webkit-scrollbar {
+  width: 8px;
+  /* largura da barra */
+}
+
+.modal-add-materia-prima::-webkit-scrollbar-track {
+  background: transparent;
+  /* fundo da trilha */
+  border-radius: 10px;
+}
+
+.modal-add-materia-prima::-webkit-scrollbar-thumb {
+  background: var( --black_10);
+  /* vermelho igual ao botão */
+  border-radius: 10px;
+}
+
+
+.card-line {
+
+  padding: 0;
+  display: flex;
+  gap: 10px;
+  display: flex;
+  /* background-color: blueviolet; */
+
+}
+
+tr {
+  border: 1px solid transparent !important;
+
+}
+
+.card {
+  background-color: rgba(234, 234, 234, 0.8);
+  border-radius: 30px;
+  width: 100%;
+  height: 116px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 25px 40px;
+  transition: box-shadow 0.3s;
+  margin: 0 auto;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  border: none;
+
+}
+
+.card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.card-content {
+  /* background-color: #007bff; */
+  display: grid;
+  grid-template-columns: 1fr 2fr repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 5px;
+  grid-row-gap: 2px;
+  align-items: center;
+  justify-content: center;
+  color: var(--shark);
+  font-family: "Jost", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  border: none;
+}
+
+#card-content-nome {
+  text-transform: uppercase;
+}
+
+.quantidade-input {
+  width: 110px;
+  padding: 4px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: transparent;
+}
+
+.quantidade-input:focus {
+  outline: none;
+}
+
+button.btn-primary {
+  margin-top: 8px;
+  background-color: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button.btn-primary:hover {
+  background-color: transparent !important;
+}
+
+.calc-footer {
+  /* background-color: aquamarine; */
+  justify-content: space-between;
+  font-family: "Jost", sans-serif;
+}
+
+.calc-footer>button {
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--white);
+  text-transform: uppercase;
+  line-height: auto;
+  letter-spacing: -0.26px;
+  padding: 10px 30px;
+  background-color: var(--thunderbird);
+  border-radius: 130px;
+}
+
+.modal-salvar-produto {
+  background-color: var(--wild_sand);
+  border-radius: 50px;
+  border: 1px solid var(--mercury);
+}
+
+.modal-salvar-produto>img {
+  width: 10px;
+  height: 10px;
+}
+
+.modal-salvar-produto>h2 {
+  padding-top: 30px;
+  font-family: "Jost", sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 50px;
+  color: var(--thunderbird);
+}
+
+.modal-salvar-produto>p {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26.3px;
+  color: var(--thunder);
+
+}
+
+.modal-salvar-produto-input>label {
+  /* background-color: red; */
+  padding-top: 20px;
+  font-family: "Maven Pro", sans-serif;
+  color: var(--shark);
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.modal-salvar-produto-input>input {
+  background-color: transparent;
+  border: 1px solid var(--dusty_gray);
+  border-radius: 10px;
+}
+
+.btn-salvarproduto {
+  justify-content: center !important;
+  align-items: center !important;
+  margin-left: 150px !important;
+  background-color: var(--crimson);
+  color: var(--white);
+  font-family: "Jost", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.26px;
+
+}
+
+.calc-footer>p {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--thunderbird);
+  font-size: 35px;
+}
+
+.calc-footer>p>span {
+  color: var(--thunder);
+  font-size: 25px;
+  line-height: 50px;
+}
+
+
+
+@media(max-width:1024px) {
+  .hero-content>p {
+    font-size: 15px;
+  }
+}
+
+@media(max-width:768px) {
+  .hero-content>h1 {
+    font-size: 45px;
+  }
+}

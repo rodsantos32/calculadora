@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Produtos{% endblock %}
+
+{% block content %}
+<div class="relative w-screen mx-[calc(50%-50vw)] overflow-x-clip">
+
+  <!-- Banner -->
+  <section class="w-full pt-24">
+    <div class="px-4 sm:px-6 lg:px-12">
+      <div class="rounded-2xl overflow-hidden bg-gradient-to-r from-red-700 via-red-600 to-neutral-900 shadow">
+        <div class="grid grid-cols-12 items-center gap-6 px-6 py-10">
+          <div class="col-span-12 md:col-span-3 flex justify-center md:justify-start">
+            <img src="/static/image/illutration-meusprodutos.svg" alt="Ilustração caminhão"
+              class="h-28 sm:h-36 md:h-40 w-auto">
+          </div>
+          <div class="col-span-12 md:col-span-9 text-center md:text-left">
+            <h2 class="text-white text-xl sm:text-2xl md:text-3xl font-semibold leading-snug">
+              CONSULTE OS VALORES<br class="hidden sm:block" />
+              DOS SEUS PRODUTOS
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Barra de Pesquisa -->
+  <section class="w-full mt-8 px-4 sm:px-6 lg:px-12">
+    <div class="relative max-w-2xl mx-auto">
+      <input type="text" placeholder="Digite o nome do produto" id="search-input"
+        class="w-full px-4 py-3 pr-12 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm">
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lista de produtos -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4" id="product-grid">
+    {% for produto in produtos %}
+    <div>
+      <details class="w-80 rounded-2xl shadow-md border border-gray-200 bg-white relative product-card">
+        <summary class="cursor-pointer list-none p-4">
+          <div class="flex flex-col">
+            <!-- Nome -->
+            <h2 class="text-center font-semibold text-green-900">{{ produto.nome }}</h2>
+
+            <!-- Infos principais -->
+            <div class="mt-4 space-y-2 text-sm text-gray-600">
+              <div class="flex justify-between">
+                <span class="font-medium">CÓDIGO</span>
+                <span class="text-gray-400">{{ produto.codigo or '-' }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-medium">DATA DE CRIAÇÃO</span>
+                <span class="text-gray-400">
+                  {{ produto.data_criacao.strftime('%d/%m/%Y') if produto.data_criacao else '-' }}
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span class="font-medium">VALOR TOTAL</span>
+                <span class="text-green-600 font-semibold">R$ {{ "%.2f"|format(produto.custo_total or 0) }}</span>
+              </div>
+            </div>
+
+            <!-- Ações -->
+            <!-- Ações -->
+            <div class="mt-4 flex justify-between items-center">
+              <div class="flex items-center space-x-2">
+                <button class="delete-button text-gray-600 hover:text-red-500 transition-colors"
+                  data-id="{{ produto.id }}" data-nome="{{ produto.nome }}">
+                  🗑️
+                </button>
+
+                {% if produto.historico_valores %}
+                <button class="ver-historico-btn text-blue-600 hover:underline text-sm"
+                  data-produto-id="{{ produto.id }}">
+                  Ver histórico
+                </button>
+                {% endif %}
+              </div>
+
+              <span class="toggle-icon text-xl font-bold">+</span>
+            </div>
+          </div>
+        </summary>
+
+        <!-- Conteúdo expandido -->
+        <div class="border-t border-gray-200 px-4 py-3 text-sm text-gray-700 space-y-1">
+          <div class="flex justify-between items-center">
+            <h3 class="text-gray-500 font-semibold">MATÉRIA-PRIMA</h3>
+            <button class="edit-toggle-btn w-5 hover:opacity-70 transition-opacity" data-produto-id="{{ produto.id }}">
+              <img src="../static/image/icon-edit.png" alt="Editar quantidades">
+            </button>
+          </div>
+
+          {% for insumo in produto.insumos %}
+          <div class="flex justify-between items-center insumo-item" data-insumo-id="{{ insumo.id }}">
+            <span>NOME: {{ insumo.nome }}</span>
+            <div class="insumo-item" data-insumo-id="{{ insumo.id_item }}" class="flex items-center space-x-2">
+              <!-- Modo visualização -->
+              <span class="insumo-quantidade">QTD {{ insumo.quantidade }}</span>
+              <!-- Modo edição -->
+              <input type="number" step="0.01" min="0" value="{{ insumo.quantidade }}"
+                class="insumo-input hidden w-20 px-2 py-1 border border-gray-300 rounded text-sm"
+                data-original-value="{{ insumo.quantidade }}">
+              <button data-insumo-id="{{ insumo.id_item }}" data-produto-id="{{ produto.id }}"
+                class="confirm-edit hidden text-green-600 hover:text-green-800 text-sm">
+                ✓
+              </button>
+              <button data-insumo-id="{{ insumo.id_item }}"
+                class="cancel-edit hidden text-red-600 hover:text-red-800 text-sm" data-insumo-id="{{ insumo.id }}">
+                ✗
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </details>
+
+      <!-- Modal de exclusão -->
+      <div id="delete-modal-{{ produto.id }}"
+        class="delete-modal absolute bg-white rounded-2xl p-4 shadow-lg hidden flex-col justify-center z-10 transition-all">
+        <div class="text-center">
+          <h2 class="text-lg font-semibold text-green-900 mb-2">{{ produto.nome }}</h2>
+          <p class="text-gray-600 mb-6">Tem certeza de que deseja excluir este produto permanentemente?</p>
+
+          <div class="flex justify-center space-x-4">
+            <button class="confirm-yes px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              data-id="{{ produto.id }}">
+              SIM
+            </button>
+            <button
+              class="confirm-no px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+              NÃO
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+
+
+</div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/pages/meus_produtos.js') }}"></script>
+<style>
+  details>summary {
+    list-style: none;
+  }
+
+  details>summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .delete-modal {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Desativar o comportamento padrão do details */
+  .product-card details summary {
+    cursor: pointer;
+  }
+
+  .product-card details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Garantir que apenas o ícone controle a abertura */
+  .product-card details>summary {
+    list-style: none;
+  }
+
+  .product-card details>summary::before {
+    display: none;
+  }
+
+  /* Estilo para a transição suave */
+  .product-card details .border-t {
+    transition: all 0.3s ease;
+  }
+
+  /* Estilo para o modo edição */
+  .editing-mode {
+    background-color: #f9fafb;
+  }
+
+  .insumo-input:focus {
+    outline: none;
+    /*ring: 2px;
+    ring-color: #3b82f6;*/
+    border-color: #3b82f6;
+  }
+
+  /* Transição suave */
+  .insumo-item {
+    transition: background-color 0.2s ease;
+  }
+
+  .editing-mode .insumo-item:hover {
+    background-color: #f3f4f6;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+</style>
+{% endblock %}
